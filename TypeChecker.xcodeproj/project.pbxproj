@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AD3884E623712B13001D3380 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD3884E523712B13001D3380 /* main.cpp */; };
+		AD3884F223712BE8001D3380 /* lexer.cc in Sources */ = {isa = PBXBuildFile; fileRef = AD3884EE23712BE8001D3380 /* lexer.cc */; };
+		AD3884F323712BE8001D3380 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD3884F023712BE8001D3380 /* Parser.cpp */; };
+		AD3884F423712BE8001D3380 /* inputbuf.cc in Sources */ = {isa = PBXBuildFile; fileRef = AD3884F123712BE8001D3380 /* inputbuf.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +26,12 @@
 
 /* Begin PBXFileReference section */
 		AD3884E223712B13001D3380 /* TypeChecker */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TypeChecker; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD3884E523712B13001D3380 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AD3884EC23712BE8001D3380 /* lexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lexer.h; sourceTree = "<group>"; };
+		AD3884ED23712BE8001D3380 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
+		AD3884EE23712BE8001D3380 /* lexer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lexer.cc; sourceTree = "<group>"; };
+		AD3884EF23712BE8001D3380 /* inputbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inputbuf.h; sourceTree = "<group>"; };
+		AD3884F023712BE8001D3380 /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
+		AD3884F123712BE8001D3380 /* inputbuf.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inputbuf.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +64,12 @@
 		AD3884E423712B13001D3380 /* TypeChecker */ = {
 			isa = PBXGroup;
 			children = (
-				AD3884E523712B13001D3380 /* main.cpp */,
+				AD3884F123712BE8001D3380 /* inputbuf.cc */,
+				AD3884EF23712BE8001D3380 /* inputbuf.h */,
+				AD3884EE23712BE8001D3380 /* lexer.cc */,
+				AD3884EC23712BE8001D3380 /* lexer.h */,
+				AD3884F023712BE8001D3380 /* Parser.cpp */,
+				AD3884ED23712BE8001D3380 /* Parser.h */,
 			);
 			path = TypeChecker;
 			sourceTree = "<group>";
@@ -119,7 +131,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD3884E623712B13001D3380 /* main.cpp in Sources */,
+				AD3884F323712BE8001D3380 /* Parser.cpp in Sources */,
+				AD3884F423712BE8001D3380 /* inputbuf.cc in Sources */,
+				AD3884F223712BE8001D3380 /* lexer.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
