@@ -10,7 +10,7 @@
 #include <set>
 
 
-std::set<TokenType> operators;
+
 LexicalAnalyzer lexer;
 
 
@@ -28,6 +28,8 @@ public:
     void parse_condition();
     void parse_whilestmt();
     void parse_stmt();
+    void parse_stmt_list();
+    void parse_assignstmt();
     void parse_typename();
     void parse_idlist();
     void parse_vardecl();

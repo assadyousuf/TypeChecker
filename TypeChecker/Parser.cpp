@@ -12,7 +12,9 @@
 #include <iostream>
 
 void Parser::syntax_error(){
-    std::cout<<"SYNTAX ERROR\n";
+    std::cout<<"Syntax Error";
+   // std::cout<<" line no: "<< lexer.get_line_no();
+    exit(1);
 }
 
 Token Parser::peek()
@@ -22,342 +24,183 @@ Token Parser::peek()
     return t;
 }
 
-void Parser::parse_boolconst(){
-    Token boolconst=peek();
-    if(boolconst.token_type==FALSE|| boolconst.token_type==TRUE){
-        boolconst=lexer.GetToken();
-        return;
-    }else{
-        std::cout << "in parseboolconst\n";
+Token Parser::expect(TokenType expected_type)
+{
+    Token t = lexer.GetToken();
+    if (t.token_type != expected_type)
         syntax_error();
-        exit(0);
-    }
+    return t;
 }
 
-
-void Parser::parse_primary(){
-    Token primary=peek();
-    switch (primary.token_type) {
-        case BOOLEAN:
-            primary=lexer.GetToken();
-            return;
-        case ID:
-            primary=lexer.GetToken();
-             return;
-        case NUM:
-            primary=lexer.GetToken();
-             return;
-        case REALNUM:
-            primary=lexer.GetToken();
-             return;
-        case STRING_CONSTANT:
-            primary=lexer.GetToken();
-             return;
-        default:
-            std::cout << "in parseprimary\n";
-            syntax_error();
-            exit(0);
-    }
-   
-}
 
 void Parser::parse_operator(){
-    Token operatorr=peek();
-    switch (operatorr.token_type) {
-        case PLUS:
-            operatorr=lexer.GetToken();
-            return;
-        case MINUS:
-            operatorr=lexer.GetToken();
-            return;
-        case MULT:
-            operatorr=lexer.GetToken();
-            return;
-        case DIV:
-            operatorr=lexer.GetToken();
-            return;
-        case AND:
-            operatorr=lexer.GetToken();
-            return;
-        case OR:
-            operatorr=lexer.GetToken();
-            return;
-        case XOR:
-            operatorr=lexer.GetToken();
-            return;
-        case GREATER:
-            operatorr=lexer.GetToken();
-            return;
-        case GTEQ:
-            operatorr=lexer.GetToken();
-            return;
-        case LESS:
-            operatorr=lexer.GetToken();
-            return;
-        case NOTEQUAL:
-            operatorr=lexer.GetToken();
-            return;
-        case LTEQ:
-            operatorr=lexer.GetToken();
-            return;
-        default:
-            std::cout << "in parseoperator\n";
-            syntax_error();
-            exit(0);
+    Token t=peek();
+    if(t.token_type==AND || t.token_type==OR || t.token_type==XOR || t.token_type==PLUS || t.token_type==MINUS || t.token_type==DIV || t.token_type==MULT || t.token_type==GREATER || t.token_type==GTEQ || t.token_type==LESS || t.token_type==NOTEQUAL || t.token_type==LTEQ  ){
+        t=lexer.GetToken();
     }
-    
-    
-    
+    else {
+        syntax_error();
+    }
+}
 
+void Parser::parse_primary(){
+    Token p=peek();
+       if(p.token_type==ID || p.token_type==NUM || p.token_type==STRING_CONSTANT || p.token_type==TRUE || p.token_type==FALSE || p.token_type==REALNUM ){
+           p=lexer.GetToken();
+       }
+       else{
+           syntax_error();
+       }
 }
 
 void Parser::parse_expr(){
-    Token expr=peek();
-    
-    if(expr.token_type==NOT){
-        lexer.GetToken();
-        parse_expr();
-    }
-    else if(expr.token_type==BOOLEAN || expr.token_type==ID || expr.token_type==REALNUM || expr.token_type==STRING_CONSTANT || expr.token_type==NUM ){
-        parse_primary();
-    }
-   
-    else if(operators.find(expr.token_type) != operators.end() ){
+    Token e=peek();
+    if(e.token_type==AND || e.token_type==OR || e.token_type==XOR || e.token_type==PLUS || e.token_type==MINUS || e.token_type==DIV || e.token_type==MULT || e.token_type==GREATER || e.token_type==GTEQ || e.token_type==LESS || e.token_type==NOTEQUAL || e.token_type==LTEQ ) /*expr->operator expr expr */{
         parse_operator();
         parse_expr();
         parse_expr();
     }
-    
+    else if(e.token_type==NOT){
+        e=lexer.GetToken();
+        parse_expr();
+    }
     else {
-        std::cout << "in parsexpr\n";
-        syntax_error();
-          exit(0);
+        parse_primary();
     }
     
 }
 
 void Parser::parse_condition(){
-    Token condition=peek();
-    if(condition.token_type==LPAREN){
-        lexer.GetToken();
-        parse_expr();
-        condition=lexer.GetToken();
-        if(condition.token_type==RPAREN){
-            //lexer.GetToken();
-        }else{
-            std::cout << "in parsecond\n";
-            syntax_error();
-              exit(0);
-        }
-    }
-    else {
-        std::cout << "in parsecond\n";
-        syntax_error();
-          exit(0);
-    }
-}
-
-
-void Parser::parse_stmt(){
-    Token stmt=peek();
-    
-    if(stmt.token_type==ID){
-        stmt=lexer.GetToken();
-        stmt=peek();
-        if(stmt.token_type==EQUAL){
-            stmt=lexer.GetToken();
-            stmt=peek();
-            parse_expr();
-            stmt=lexer.GetToken();
-            if(stmt.token_type==SEMICOLON){
-                
-            }else{
-                syntax_error();
-                std::cout << "in parsestmt\n";
-                         exit(0);
-            }
-        }else {
-            syntax_error();
-            std::cout << "in parsestmt\n";
-                     exit(0);
-        }
-    }else if(stmt.lexeme=="WHILE"){
-        parse_whilestmt();
-    }else {
-        syntax_error();
-        std::cout << "in parsestmt\n";
-          exit(0);
-    }
-    
+    expect(LPAREN);
+    parse_expr();
+    expect(RPAREN);
 }
 
 void Parser::parse_whilestmt(){
-    bool leftbrace=false;
-    Token whilestmt=peek();
-    if(whilestmt.lexeme=="WHILE"){
+    expect(WHILE);
+    parse_condition(); //WHILE condition
+    Token w=peek();
+    if(w.token_type==LBRACE){ //WHILE condition LBRACE stmtlist RBRACE
         lexer.GetToken();
-        parse_condition();
-        whilestmt=peek();
-        if(whilestmt.token_type==LBRACE){
-            leftbrace=true;
-            lexer.GetToken();
-        }
-        parse_stmt();
-        whilestmt=peek();
-        if(whilestmt.token_type==WHILE||whilestmt.token_type==ID ){
-            parse_stmt();
-            whilestmt=peek();
-        }
-        
-        if(whilestmt.token_type==RBRACE && leftbrace==true ){
-           lexer.GetToken();
-                                        }
-        
-        
-        
-        
-    } else{
-        syntax_error();
-        std::cout << "in parsewhilestmt\n";
-          exit(0);
+        parse_stmt_list();
+        expect(RBRACE);
     }
+    else if(w.token_type==ID || w.token_type==WHILE){//WHILE condition stmt
+        parse_stmt();
+    }
+    else{
+        syntax_error();
+    }
+}
+
+void Parser::parse_assignstmt(){
+    expect(ID);
+    expect(EQUAL);
+    parse_expr();
+    expect(SEMICOLON);
+}
+
+void Parser::parse_stmt(){
+    Token s=peek();
+    if(s.token_type==WHILE){
+        parse_whilestmt();
+    }
+    else {
+        parse_assignstmt();
+    }
+}
+
+void Parser::parse_stmt_list(){ //may cause problems
+    parse_stmt();
+    Token s=lexer.GetToken();
+    Token s2=lexer.GetToken();
+    lexer.UngetToken(s2);
+    lexer.UngetToken(s);
     
+    if(s.token_type==WHILE){
+        parse_stmt_list();
+    }
+    else if(s.token_type==ID){
+        if(s2.token_type==EQUAL){
+            parse_stmt_list();
+        }
+    }
 }
 
 void Parser::parse_typename(){
-    Token typenames=peek();
-    switch (typenames.token_type) {
-        case REAL:
-            lexer.GetToken();
-            break;
-            
-        case INT:
-            lexer.GetToken();
-            break;
-            
-        case BOOLEAN:
-            lexer.GetToken();
-            break;
-            
-        case STRING:
-            lexer.GetToken();
-            break;
-        
-        default:
-            
-            syntax_error();
-            std::cout << "in parsetypename\n";
-            exit(0);
-            
-            
-    }
-    
-}
-
-void Parser::parse_idlist(){
-    Token idlist=peek();
-    if(idlist.token_type==ID){
-        lexer.GetToken();
-        idlist=peek();
-        if(idlist.token_type==COMMA){
-            parse_idlist();
-        }
+    Token t=peek();
+    if(t.token_type==REAL|| t.token_type==INT || t.token_type==BOOLEAN || t.token_type==STRING){
+        t=lexer.GetToken();
     }else {
         syntax_error();
     }
-    
+}
+
+void Parser::parse_idlist(){
+    expect(ID);
+    Token i=peek();
+    if(i.token_type==COMMA){
+        i=lexer.GetToken();
+        parse_idlist();
+    }
 }
 
 void Parser::parse_vardecl(){
-    Token var=peek();
-    if(var.token_type==ID){
-        parse_idlist();
-        var=peek();
-        if(var.token_type == COLON){
-            lexer.GetToken();
-            parse_typename();
-            var=peek();
-            if(var.token_type==SEMICOLON){
-                lexer.GetToken();
-            }else{
-                syntax_error();
-                std::cout << "in parsevardecl\n";
-                exit(0);
-            }
-        }else{
-            syntax_error();
-            std::cout << "in parsevardecl\n";
-            exit(0);
-            
+    parse_idlist();
+    expect(COLON);
+    parse_typename();
+    expect(SEMICOLON);
+}
+
+
+
+void Parser::parse_scope_list(){
+    Token s=lexer.GetToken();
+    Token s2=lexer.GetToken(); //unget S then S2
+    lexer.UngetToken(s2);
+    lexer.UngetToken(s);
+   
+    if(s.token_type==WHILE){
+        parse_stmt();
+    }
+    
+    else if(s.token_type==ID){
+        if(s2.token_type==EQUAL){
+            parse_stmt();
         }
-    }else {
-       syntax_error();
-       std::cout << "in parsevardecl\n";
-       exit(0);
+        else {
+            parse_vardecl();
+        }
+        }
+    
+    else if(s.token_type==LBRACE){
+           parse_scope();
+       }
+    
+    
+    else {
+        syntax_error();
+    }
+    
+    s=peek();
+    if(s.token_type!=RBRACE){
+              parse_scope_list();
     }
 }
 
 
 void Parser::parse_scope(){
-    Token scope=peek();
-    if(scope.token_type==LBRACE){
-        lexer.GetToken();
-        parse_scope_list();
-        scope=lexer.GetToken();
-        if(scope.token_type==RBRACE){
-            
-        }else {
-           syntax_error();
-           std::cout << "in parsescope\n";
-           exit(0);
-        }
-    }else {
-        syntax_error();
-        std::cout << "in parsescope\n";
-        exit(0);
-    }
-    
+    expect(LBRACE);
+    parse_scope_list();
+    expect(RBRACE);
 }
-
-void Parser::parse_scope_list(){
-    Token scopelist=peek();
-    Token lookahead=lexer.GetToken();
-    
-      if(scopelist.token_type==ID || scopelist.lexeme=="WHILE"){ // var_decl or var_decl scope_list or stmt or stmt list
-          lookahead=lexer.GetToken();
-        if(lookahead.token_type==COLON){
-            lexer.UngetToken(lookahead);
-            lexer.UngetToken(scopelist);
-            parse_vardecl();
-            scopelist=peek();
-        }else if(lookahead.token_type==EQUAL || lookahead.token_type==LPAREN){
-            lexer.UngetToken(lookahead);
-            lexer.UngetToken(scopelist);
-            parse_stmt();
-        }
-        
-        if( (scopelist.token_type==ID ||scopelist.lexeme=="WHILE" || scopelist.token_type==LBRACE) && peek().token_type!=RBRACE ){
-            parse_scope_list();
-                              }
-    }
-    
-    else if(scopelist.token_type==LBRACE){//scope or scope scope_list
-        lexer.UngetToken(lookahead);
-        parse_scope();
-        scopelist=peek();
-        if((scopelist.token_type==ID ||scopelist.lexeme=="WHILE" || scopelist.token_type==LBRACE) && peek().token_type!=RBRACE  ){
-            parse_scope_list();
-        }
-    }
-    
-    
-    
-}
-
 
 void Parser::parse_program(){
     parse_scope();
+    //expect(END_OF_FILE);
 }
+
+
 
 
 
@@ -384,14 +227,9 @@ void Parser::parse_program(){
 int main()
 {
     
-    operators.insert(PLUS); operators.insert(MINUS); operators.insert(MULT); operators.insert(DIV);
-    
-    
-    operators.insert(AND); operators.insert(OR); operators.insert(XOR); operators.insert(GREATER); operators.insert(GTEQ); operators.insert(LESS); operators.insert(NOTEQUAL);  operators.insert(LTEQ);
-    
+  
     Parser *p=new Parser();
     p->parse_program();
-   
     
     
     
