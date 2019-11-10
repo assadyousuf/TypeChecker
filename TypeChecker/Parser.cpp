@@ -11,6 +11,11 @@
 #include "Parser.h"
 #include <iostream>
 
+using namespace std;
+
+scope *currentscope=nullptr;
+string error="";
+
 void Parser::syntax_error(){
     std::cout<<"Syntax Error";
    // std::cout<<" line no: "<< lexer.get_line_no();
@@ -45,6 +50,16 @@ void Parser::parse_operator(){
 
 void Parser::parse_primary(){
     Token p=peek();
+    isBuiltInType(p);//checks if name being used is a data type
+    
+    symbol ps; ps.name=p.lexeme;
+    if(p.token_type==ID){
+        if(currentscope->lookup(ps, currentscope) == nullptr){
+            error.append("ERROR CODE 1.2 "); error.append(p.lexeme); error.append("\n");
+        } else{
+            currentscope->lookup(ps, currentscope)->isUsed=true;
+        }
+    }
        if(p.token_type==ID || p.token_type==NUM || p.token_type==STRING_CONSTANT || p.token_type==TRUE || p.token_type==FALSE || p.token_type==REALNUM ){
            p=lexer.GetToken();
        }
@@ -94,6 +109,13 @@ void Parser::parse_whilestmt(){
 }
 
 void Parser::parse_assignstmt(){
+    symbol newsymbol;
+    newsymbol.name=peek().lexeme;
+    if(currentscope->lookup(newsymbol, currentscope) !=nullptr){
+        currentscope->lookup(newsymbol, currentscope)->isUsed=true;}
+    Token p=peek();
+    isBuiltInType(p);
+    
     expect(ID);
     expect(EQUAL);
     parse_expr();
@@ -110,7 +132,7 @@ void Parser::parse_stmt(){
     }
 }
 
-void Parser::parse_stmt_list(){ //may cause problems
+void Parser::parse_stmt_list(){ //
     parse_stmt();
     Token s=lexer.GetToken();
     Token s2=lexer.GetToken();
@@ -137,12 +159,21 @@ void Parser::parse_typename(){
 }
 
 void Parser::parse_idlist(){
-    expect(ID);
+    Token id=expect(ID);
+    isBuiltInType(id);
+    symbol *newsymbol=new symbol(id.lexeme);
+    if(currentscope->lookup(*newsymbol, currentscope) != nullptr ){
+        error.append("ERROR CODE 1.1 "); error.append(newsymbol->name); error.append("\n");
+    } else {
+        currentscope->addToTable(newsymbol);
+    }
     Token i=peek();
     if(i.token_type==COMMA){
         i=lexer.GetToken();
         parse_idlist();
     }
+    Token type=peek();
+    newsymbol->declaredtype=type.lexeme;
 }
 
 void Parser::parse_vardecl(){
@@ -156,7 +187,7 @@ void Parser::parse_vardecl(){
 
 void Parser::parse_scope_list(){
     Token s=lexer.GetToken();
-    Token s2=lexer.GetToken(); //unget S then S2
+    Token s2=lexer.GetToken(); //
     lexer.UngetToken(s2);
     lexer.UngetToken(s);
    
@@ -191,8 +222,29 @@ void Parser::parse_scope_list(){
 
 void Parser::parse_scope(){
     expect(LBRACE);
+     scope *temp = nullptr;
+    if(currentscope==nullptr){
+        currentscope=new scope();
+    } else if(currentscope != nullptr){
+        temp=currentscope;
+        scope *newscope=new scope();
+        temp->child=newscope;
+        newscope->parent=temp;
+        currentscope=newscope;
+    }
+    
     parse_scope_list();
+    
+     symbol* varsNotUsed;
+    //varsNotUsed.clear();
+    varsNotUsed=currentscope->varNotUsed();
+    if(varsNotUsed!=nullptr){
+        error.append("ERROR CODE 1.3 "); error.append(varsNotUsed->name); error.append("\n");
+    }
+    
     expect(RBRACE);
+    currentscope=currentscope->parent;
+    
 }
 
 void Parser::parse_program(){
@@ -228,9 +280,12 @@ int main()
 {
     
   
-    Parser *p=new Parser();
-    p->parse_program();
+    Parser p;
+    p.parse_program();
     
+    if(!error.empty()){
+        cout << error;
+    }
     
     
 }
