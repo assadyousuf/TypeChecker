@@ -9,10 +9,8 @@
 #include <string>
 #include <cctype>
 
-
 #include "lexer.h"
 #include "inputbuf.h"
-
 
 using namespace std;
 
@@ -328,6 +326,7 @@ Token LexicalAnalyzer::GetToken()
             return tmp;
     }
 }
+
 
 
 

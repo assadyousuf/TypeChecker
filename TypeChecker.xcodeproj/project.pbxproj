@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AD3884F223712BE8001D3380 /* lexer.cc in Sources */ = {isa = PBXBuildFile; fileRef = AD3884EE23712BE8001D3380 /* lexer.cc */; };
-		AD3884F323712BE8001D3380 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD3884F023712BE8001D3380 /* Parser.cpp */; };
 		AD3884F423712BE8001D3380 /* inputbuf.cc in Sources */ = {isa = PBXBuildFile; fileRef = AD3884F123712BE8001D3380 /* inputbuf.cc */; };
+		AD3884F62378DD81001D3380 /* Parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = AD3884F52378DD81001D3380 /* Parser.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,8 +30,8 @@
 		AD3884ED23712BE8001D3380 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		AD3884EE23712BE8001D3380 /* lexer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lexer.cc; sourceTree = "<group>"; };
 		AD3884EF23712BE8001D3380 /* inputbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inputbuf.h; sourceTree = "<group>"; };
-		AD3884F023712BE8001D3380 /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
 		AD3884F123712BE8001D3380 /* inputbuf.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inputbuf.cc; sourceTree = "<group>"; };
+		AD3884F52378DD81001D3380 /* Parser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,11 +64,11 @@
 		AD3884E423712B13001D3380 /* TypeChecker */ = {
 			isa = PBXGroup;
 			children = (
+				AD3884F52378DD81001D3380 /* Parser.cc */,
 				AD3884F123712BE8001D3380 /* inputbuf.cc */,
 				AD3884EF23712BE8001D3380 /* inputbuf.h */,
 				AD3884EE23712BE8001D3380 /* lexer.cc */,
 				AD3884EC23712BE8001D3380 /* lexer.h */,
-				AD3884F023712BE8001D3380 /* Parser.cpp */,
 				AD3884ED23712BE8001D3380 /* Parser.h */,
 			);
 			path = TypeChecker;
@@ -131,7 +131,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD3884F323712BE8001D3380 /* Parser.cpp in Sources */,
+				AD3884F62378DD81001D3380 /* Parser.cc in Sources */,
 				AD3884F423712BE8001D3380 /* inputbuf.cc in Sources */,
 				AD3884F223712BE8001D3380 /* lexer.cc in Sources */,
 			);
@@ -252,7 +252,9 @@
 		AD3884EA23712B13001D3380 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -260,7 +262,9 @@
 		AD3884EB23712B13001D3380 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CODE_SIGN_STYLE = Automatic;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
