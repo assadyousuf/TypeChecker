@@ -27,7 +27,10 @@ scope *currentscope=nullptr;
 string error;
 string output;
 string unintalized;
-string type;
+vector <string> type;
+int typeindex=0;
+bool rightsidemismatch=false;
+bool mismatchonthisline=false;
 
 void syntaxerror(){
     cout<<"Syntax Error";
@@ -204,8 +207,11 @@ public:
                     return INT;
                 }
             }
-                else {
-                    type.append("TYPE MISMATCH "); type.append(std::to_string(lexer.get_line_no())); type.append(" C3"); type.append("\n");
+                else if(!mismatchonthisline){
+                    rightsidemismatch=true;
+                    mismatchonthisline=true;
+                    type.push_back("TYPE MISMATCH "); type.push_back(std::to_string(lexer.get_line_no())); type.push_back(" C3"); type.push_back("\n");
+                    typeindex++;
                     return ERROR;
                 }
             
@@ -215,24 +221,44 @@ public:
         else if(op==AND || op == OR || op== XOR ){
             if(type1==BOOLEAN && type2==BOOLEAN){
                 return BOOLEAN;
-            }else {
-                 type.append("TYPE MISMATCH "); type.append(std::to_string(lexer.get_line_no())); type.append(" C4");type.append("\n");
+            }else if(!mismatchonthisline) {
+                rightsidemismatch=true;
+                mismatchonthisline=true;
+                 type.push_back("TYPE MISMATCH "); type.push_back(std::to_string(lexer.get_line_no())); type.push_back(" C4");type.push_back("\n");
+                typeindex++;
                 return ERROR;
             }
         }
         else if(op==GREATER || op == GTEQ || op== LESS || op==NOTEQUAL || op==LTEQ){
-            if((type1==INT || type1==REAL)){
+            if(type1==INT || type1==REAL){
                 if(type2==INT || type2==REAL){
                     return BOOLEAN;}
-                else {
-                     type.append("TYPE MISMATCH "); type.append(std::to_string(lexer.get_line_no())); type.append(" C6");type.append("\n");
+                else if(!mismatchonthisline) {
+                    rightsidemismatch=true;
+                    mismatchonthisline=true;
+                     type.push_back("TYPE MISMATCH "); type.push_back(std::to_string(lexer.get_line_no())); type.push_back(" C6");type.push_back("\n");
+                    typeindex++;
+                }
+            }else if(type2==INT || type2==REAL){
+                if(type1==INT || type1==REAL){
+                    return BOOLEAN;}
+                else if(!mismatchonthisline) {
+                    rightsidemismatch=true;
+                    mismatchonthisline=true;
+                     type.push_back("TYPE MISMATCH "); type.push_back(std::to_string(lexer.get_line_no())); type.push_back(" C6");type.push_back("\n");
+                    typeindex++;
                 }
             }
+            
+            
             else if((type1==STRING && type2==STRING) || (type1==BOOLEAN && type2==BOOLEAN)){
                 return BOOLEAN;
                 }
-            else {
-                type.append("TYPE MISMATCH "); type.append(std::to_string(lexer.get_line_no())); type.append(" C5");type.append("\n");
+            else if(!mismatchonthisline) {
+                rightsidemismatch=true;
+                mismatchonthisline=true;
+                type.push_back("TYPE MISMATCH "); type.push_back(std::to_string(lexer.get_line_no())); type.push_back(" C5");type.push_back("\n");
+                typeindex++;
                 return ERROR;
             }
             
