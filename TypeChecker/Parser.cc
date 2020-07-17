@@ -1,13 +1,4 @@
 
-/*
- * Copyright (C) Rida Bazzi, 2017
- *
- * Do not share this file with anyone
- *
- * Do not post this file or derivatives of
- * of this file online
- *
- */
 
 
 #include "Parser.h"
